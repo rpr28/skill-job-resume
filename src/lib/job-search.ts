@@ -18,7 +18,9 @@ export type Resume = {
 export type SearchOptions = { limit?: number; companies?: string[]; offlineSeed?: Job[] };
 
 const GREENHOUSE_COMPANIES: Record<string,string> = {
-  notion:"notion", coursera:"coursera", openai:"openai", stripe:"stripe", nvidia:"nvidia",
+  coursera:"coursera", stripe:"stripe", 
+  // Working companies - removed failing ones
+  // notion:"notion", openai:"openai", nvidia:"nvidia", // These return 404
 };
 const LEVER_COMPANIES: Record<string,string> = {};
 const REMOTEOK_ENDPOINT = "https://remoteok.com/api";

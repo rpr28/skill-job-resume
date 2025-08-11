@@ -17,6 +17,8 @@ export default function TestJobsPage() {
   const [jobs, setJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<string>("");
+  const [limit, setLimit] = useState(50);
+  const [showAllJobs, setShowAllJobs] = useState(false);
 
   const testJobSearch = async () => {
     setLoading(true);
@@ -26,7 +28,11 @@ export default function TestJobsPage() {
       const response = await fetch('/api/jobs', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ resume, limit: 10 })
+        body: JSON.stringify({ 
+          resume, 
+          limit: showAllJobs ? 1000 : limit,
+          companies: showAllJobs ? [] : undefined 
+        })
       });
       
       if (!response.ok) {
@@ -76,6 +82,27 @@ export default function TestJobsPage() {
               })}
               placeholder="Frontend Engineer, Software Developer"
             />
+          </div>
+          <div>
+            <Label>Number of jobs to show: {showAllJobs ? 'All' : limit}</Label>
+            <input 
+              type="range" 
+              min="10" 
+              max="100" 
+              value={limit} 
+              onChange={(e) => setLimit(Number(e.target.value))}
+              className="w-full"
+              disabled={showAllJobs}
+            />
+          </div>
+          <div className="flex items-center space-x-2">
+            <input 
+              type="checkbox" 
+              id="showAllJobs"
+              checked={showAllJobs}
+              onChange={(e) => setShowAllJobs(e.target.checked)}
+            />
+            <Label htmlFor="showAllJobs">Show all jobs (no scoring filter)</Label>
           </div>
           <Button onClick={testJobSearch} disabled={loading}>
             {loading ? "Searching..." : "Test Job Search"}
