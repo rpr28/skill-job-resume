@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 import ResumeForm, { ResumeData } from "@/components/resume/ResumeForm";
 import ModernMinimal from "@/components/resume/templates/ModernMinimal";
 import ClassicClean from "@/components/resume/templates/ClassicClean";
+import RenderCV from "@/components/resume/templates/RenderCV";
 import { useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
-
 const Resume = () => {
   const [data, setData] = useState<ResumeData>({
     name: "",
@@ -56,6 +56,7 @@ const Resume = () => {
               <TabsList>
                 <TabsTrigger value="modern">Modern Minimal</TabsTrigger>
                 <TabsTrigger value="classic">Classic Clean</TabsTrigger>
+                <TabsTrigger value="rendercv">RenderCV</TabsTrigger>
               </TabsList>
               <div ref={printRef} className="bg-white text-black p-6">
                 <TabsContent value="modern">
@@ -63,6 +64,9 @@ const Resume = () => {
                 </TabsContent>
                 <TabsContent value="classic">
                   <ClassicClean data={data} />
+                </TabsContent>
+                <TabsContent value="rendercv">
+                  <RenderCV data={data} />
                 </TabsContent>
               </div>
             </Tabs>
