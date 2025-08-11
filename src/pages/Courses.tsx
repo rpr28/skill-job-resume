@@ -1,4 +1,5 @@
-import { Helmet } from "react-helmet-async";
+"use client";
+
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -20,11 +21,6 @@ const Courses = () => {
 
   return (
     <div className="container mx-auto py-10">
-      <Helmet>
-        <title>Course Directory – CareerBoost</title>
-        <meta name="description" content="Search curated courses from Coursera, Udemy, NPTEL and more." />
-        <link rel="canonical" href={typeof window !== 'undefined' ? window.location.href : '/courses'} />
-      </Helmet>
       <h1 className="sr-only">Upskill Courses – curated directory</h1>
       <div className="grid gap-6">
         <div className="grid md:grid-cols-3 gap-3">

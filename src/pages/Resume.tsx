@@ -1,4 +1,5 @@
-import { Helmet } from "react-helmet-async";
+"use client";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -26,11 +27,6 @@ const Resume = () => {
 
   return (
     <div className="container mx-auto py-10">
-      <Helmet>
-        <title>Resume Builder – CareerBoost</title>
-        <meta name="description" content="Create ATS-friendly resumes from clean templates and export to PDF." />
-        <link rel="canonical" href={typeof window !== 'undefined' ? window.location.href : '/resume'} />
-      </Helmet>
       <h1 className="sr-only">Resume Builder – ATS-friendly templates</h1>
       <div className="grid md:grid-cols-2 gap-8">
         <Card>

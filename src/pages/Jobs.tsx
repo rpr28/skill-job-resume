@@ -1,4 +1,5 @@
-import { Helmet } from "react-helmet-async";
+"use client";
+
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -62,11 +63,6 @@ const Jobs = () => {
 
   return (
     <div className="container mx-auto py-10">
-      <Helmet>
-        <title>Job Search – CareerBoost</title>
-        <meta name="description" content="Search curated jobs and subscribe to instant/daily email alerts." />
-        <link rel="canonical" href={typeof window !== 'undefined' ? window.location.href : '/jobs'} />
-      </Helmet>
       <h1 className="sr-only">Job Search – filters and alerts</h1>
       <div className="grid gap-6">
         <Card>

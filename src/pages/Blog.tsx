@@ -1,5 +1,3 @@
-import { Helmet } from "react-helmet-async";
-
 const posts = [
   {
     id: 'p1',
@@ -25,28 +23,11 @@ const posts = [
 ];
 
 const Blog = () => {
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Blog",
-    "name": "CareerBoost Blog",
-    "url": typeof window !== 'undefined' ? window.location.origin + '/blog' : '/blog',
-    "blogPosts": posts.map(p => ({
-      "@type": "BlogPosting",
-      "headline": p.title,
-      "datePublished": p.datePublished,
-      "url": p.url,
-      "description": p.excerpt
-    }))
-  } as const;
+  // Note: JSON-LD removed as it was causing serialization issues in Next.js
+  // This can be added back using Next.js metadata API if needed
 
   return (
     <div className="container mx-auto py-10">
-      <Helmet>
-        <title>Career Tips Blog – CareerBoost</title>
-        <meta name="description" content="Actionable tips on resumes, job search, and upskilling." />
-        <link rel="canonical" href={typeof window !== 'undefined' ? window.location.href : '/blog'} />
-        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
-      </Helmet>
       <h1 className="text-2xl font-semibold mb-6">Career Tips</h1>
       <div className="grid md:grid-cols-3 gap-6">
         {posts.map((p) => (

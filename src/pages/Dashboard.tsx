@@ -1,5 +1,3 @@
-import { Helmet } from "react-helmet-async";
-
 const Dashboard = () => {
   const lastResume = typeof window !== 'undefined' ? localStorage.getItem('cb:resume:last') : null;
   const resume = lastResume ? JSON.parse(lastResume) : null;
@@ -7,11 +5,6 @@ const Dashboard = () => {
 
   return (
     <div className="container mx-auto py-10">
-      <Helmet>
-        <title>Dashboard – CareerBoost</title>
-        <meta name="description" content="Your saved resumes and subscriptions." />
-        <link rel="canonical" href={typeof window !== 'undefined' ? window.location.href : '/dashboard'} />
-      </Helmet>
       <h1 className="text-2xl font-semibold mb-4">Dashboard</h1>
       <section className="space-y-6">
         <div>
