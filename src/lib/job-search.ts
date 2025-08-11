@@ -46,24 +46,36 @@ function dedupe(jobs:Job[]):Job[]{ const m=new Map<string,Job>(); for(const j of
 
 async function fetchRemoteOK():Promise<Job[]>{
   try{
+    console.log("🌐 Fetching from RemoteOK...");
     const res=await fetch(REMOTEOK_ENDPOINT,{headers:{ "User-Agent":"job-matcher/1.0"}});
     if(!res.ok) throw new Error(`RemoteOK ${res.status}`);
     const data=await res.json(); if(!Array.isArray(data)) return [];
-    return data.filter((d:any)=>d?.id && d?.position && d?.company).map((d:any):Job=>({
+    const jobs = data.filter((d:any)=>d?.id && d?.position && d?.company).map((d:any):Job=>({
       id:`remoteok_${d.id}`, title:d.position, company:d.company, location:d.location || (d?.remote?"Remote":""), remote:Boolean(d.remote) || String(d.location||"").toLowerCase().includes("remote"),
       tags:Array.isArray(d.tags)?d.tags:[], summary:d.description?stripHtml(String(d.description)).slice(0,280):"", url:d.url || d.apply_url || d.slug || ""
     }));
-  }catch{ return []; }
+    console.log(`✅ RemoteOK: ${jobs.length} jobs`);
+    return jobs;
+  }catch(error){
+    console.log(`❌ RemoteOK failed:`, error);
+    return []; 
+  }
 }
 async function fetchGreenhouse(slug:string):Promise<Job[]>{
   try{
+    console.log(`🏢 Fetching from Greenhouse (${slug})...`);
     const res=await fetch(`https://boards-api.greenhouse.io/v1/boards/${encodeURIComponent(slug)}/jobs`,{headers:{ "User-Agent":"job-matcher/1.0"}});
     if(!res.ok) throw new Error(`GH ${slug} ${res.status}`);
     const data=await res.json(); const jobs:any[]=Array.isArray(data?.jobs)?data.jobs:[];
-    return jobs.map((j:any):Job=>({ id:`greenhouse_${slug}_${j.id}`, title:j.title||"", company:slug, location:j?.location?.name||"",
+    const result = jobs.map((j:any):Job=>({ id:`greenhouse_${slug}_${j.id}`, title:j.title||"", company:slug, location:j?.location?.name||"",
       remote:/remote/i.test(j?.location?.name||"") || hasRemoteInMetadata(j), tags:extractTagsFromGreenhouse(j),
       summary:summarizeGreenhouseContent(j), url:j.absolute_url || `https://boards.greenhouse.io/${slug}/jobs/${j.id}` }));
-  }catch{ return []; }
+    console.log(`✅ Greenhouse (${slug}): ${result.length} jobs`);
+    return result;
+  }catch(error){
+    console.log(`❌ Greenhouse (${slug}) failed:`, error);
+    return []; 
+  }
 }
 async function fetchLever(slug:string):Promise<Job[]>{
   try{
@@ -102,7 +114,34 @@ export async function searchJobsForResume(resume:Resume, opts:SearchOptions={}):
   const batches:Promise<Job[]>[]=[fetchRemoteOK()];
   for(const slug of Object.values(GREENHOUSE_COMPANIES)) batches.push(fetchGreenhouse(slug));
   for(const slug of Object.values(LEVER_COMPANIES)) batches.push(fetchLever(slug));
-  const fetched = opts.offlineSeed ? [opts.offlineSeed] : await Promise.all(batches);
-  const all = dedupe(fetched.flat()).map(normalizeJob);
-  return all.map(j=>({j,s:scoreJobAgainstResume(j,resume)})).sort((a,b)=>b.s-a.s).slice(0,limit).map(({j})=>j);
+  
+  console.log(`🔍 Fetching jobs from ${batches.length} sources...`);
+  
+  const fetched = opts.offlineSeed ? [opts.offlineSeed] : await Promise.allSettled(batches);
+  
+  if (!opts.offlineSeed) {
+    const results = fetched as PromiseSettledResult<Job[]>[];
+    results.forEach((result, index) => {
+      if (result.status === 'fulfilled') {
+        console.log(`✅ Source ${index}: ${result.value.length} jobs`);
+      } else {
+        console.log(`❌ Source ${index} failed:`, result.reason);
+      }
+    });
+  }
+  
+  const successfulResults = opts.offlineSeed ? 
+    fetched : 
+    (fetched as PromiseSettledResult<Job[]>[])
+      .filter((result): result is PromiseFulfilledResult<Job[]> => result.status === 'fulfilled')
+      .map(result => result.value);
+  
+  const all = dedupe(successfulResults.flat()).map(normalizeJob);
+  console.log(`📊 Total unique jobs after deduplication: ${all.length}`);
+  
+  const scored = all.map(j=>({j,s:scoreJobAgainstResume(j,resume)}));
+  const sorted = scored.sort((a,b)=>b.s-a.s);
+  console.log(`🏆 Top 5 scores:`, sorted.slice(0,5).map(({j,s})=>`${j.title} (${s.toFixed(3)})`));
+  
+  return sorted.slice(0,limit).map(({j})=>j);
 }
