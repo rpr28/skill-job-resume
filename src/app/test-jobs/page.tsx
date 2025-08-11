@@ -16,9 +16,11 @@ export default function TestJobsPage() {
   });
   const [jobs, setJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState<string>("");
 
   const testJobSearch = async () => {
     setLoading(true);
+    setStatus("Searching for jobs...");
     try {
       console.log("Testing job search with resume:", resume);
       const response = await fetch('/api/jobs', {
@@ -33,9 +35,12 @@ export default function TestJobsPage() {
       
       const data = await response.json();
       console.log("Job search results:", data.jobs);
-      setJobs(data.jobs);
+      console.log("Number of jobs found:", data.jobs?.length || 0);
+      setJobs(data.jobs || []);
+      setStatus(`Found ${data.jobs?.length || 0} jobs`);
     } catch (error) {
       console.error("Job search error:", error);
+      setStatus(`Error: ${error.message}`);
     } finally {
       setLoading(false);
     }
@@ -75,6 +80,9 @@ export default function TestJobsPage() {
           <Button onClick={testJobSearch} disabled={loading}>
             {loading ? "Searching..." : "Test Job Search"}
           </Button>
+          {status && (
+            <p className="text-sm text-muted-foreground">{status}</p>
+          )}
         </CardContent>
       </Card>
 
@@ -88,7 +96,7 @@ export default function TestJobsPage() {
               {jobs.map((job) => (
                 <div key={job.id} className="border rounded-lg p-4">
                   <h3 className="font-semibold">{job.title}</h3>
-                  <p className="text-sm text-muted-foreground">{job.company} • {job.location}</p>
+                  <p className="text-sm text-muted-foreground">{job.company} • {job.location} {job.remote ? '• Remote' : ''}</p>
                   <p className="text-sm mt-2">{job.summary}</p>
                   <div className="flex gap-2 mt-2">
                     {job.tags?.slice(0, 3).map((tag: string) => (
@@ -97,6 +105,18 @@ export default function TestJobsPage() {
                       </span>
                     ))}
                   </div>
+                  {job.url && (
+                    <div className="mt-3">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => window.open(job.url, '_blank')}
+                      >
+                        View Job
+                      </Button>
+                      <p className="text-xs text-muted-foreground mt-1">URL: {job.url}</p>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
