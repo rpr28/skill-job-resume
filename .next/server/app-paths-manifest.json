@@ -1,11 +1,1 @@
-{
-  "/_not-found/page": "app/_not-found/page.js",
-  "/api/jobs/route": "app/api/jobs/route.js",
-  "/blog/page": "app/blog/page.js",
-  "/courses/page": "app/courses/page.js",
-  "/jobs/page": "app/jobs/page.js",
-  "/page": "app/page.js",
-  "/resume/page": "app/resume/page.js",
-  "/test-jobs/page": "app/test-jobs/page.js",
-  "/dashboard/page": "app/dashboard/page.js"
-}
+{}
