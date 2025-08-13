@@ -1,21 +1,52 @@
-import { normalizeJob, mkId } from "../normalize";
-import { GREENHOUSE_SLUGS as GH } from "./config";
-export async function fetchGreenhouse(slug){
-  try{
-    const res = await fetch(`https://boards-api.greenhouse.io/v1/boards/${encodeURIComponent(slug)}/jobs`, { headers: { "User-Agent":"careerboost/1.0" } });
-    if(!res.ok) throw new Error(`gh ${slug} ${res.status}`);
-    const data = await res.json();
-    const jobs = Array.isArray(data?.jobs) ? data.jobs : [];
-    return jobs.map(j => normalizeJob({
-      id: mkId("gh", `${slug}_${j.id}`), title: j.title || "", company: slug,
-      location: j?.location?.name || "", remote:/remote/i.test(j?.location?.name||"") || JSON.stringify(j||{}).toLowerCase().includes("remote"),
-      tags: [...(j?.departments?.map(d=>d?.name)||[]), ...(j?.offices?.map(o=>o?.name)||[])],
-      summary: j?.content || "", url: j.absolute_url || `https://boards.greenhouse.io/${slug}/jobs/${j.id}`,
-      employmentType: "", source: "greenhouse", postedAt: ""
-    }));
-  }catch{ return []; }
+import { backoffFetch, normalizeJob, extractTags, limitConcurrency, JOB_FETCH } from "../utils.js";
+import { GREENHOUSE_SLUGS as GH } from "./config.js";
+
+export async function fetchGreenhouse(slug, { limit = JOB_FETCH.perSourceLimit } = {}) {
+  try {
+    const url = `https://boards-api.greenhouse.io/v1/boards/${encodeURIComponent(slug)}/jobs`;
+    const response = await backoffFetch(url);
+    const data = await response.json();
+    
+    if (!data || !Array.isArray(data.jobs)) {
+      return [];
+    }
+    
+    const jobs = data.jobs.slice(0, limit).map(job => {
+      const tags = extractTags(job.content || "", [
+        ...(job?.departments?.map(d => d?.name) || []),
+        ...(job?.offices?.map(o => o?.name) || [])
+      ]);
+      
+      return normalizeJob({
+        id: `gh_${slug}_${job.id}`,
+        title: job.title || "",
+        company: slug,
+        location: job?.location?.name || "",
+        remote: /remote/i.test(job?.location?.name || "") || JSON.stringify(job || {}).toLowerCase().includes("remote"),
+        tags: tags,
+        summary: job?.content || "",
+        url: job.absolute_url || `https://boards.greenhouse.io/${slug}/jobs/${job.id}`,
+        employmentType: "",
+        source: "greenhouse",
+        postedAt: ""
+      });
+    });
+    
+    return jobs;
+  } catch (error) {
+    console.error(`Greenhouse ${slug} fetch error:`, error.message);
+    return [];
+  }
 }
-export async function fetchGreenhouseAll(){
-  const batches = await Promise.allSettled(GH.map(fetchGreenhouse));
-  return batches.filter(b=>b.status==="fulfilled").flatMap(b=>b.value);
+
+export async function fetchGreenhouseAll({ limit = JOB_FETCH.perSourceLimit } = {}) {
+  console.log(`Fetching Greenhouse jobs from ${GH.length} companies...`);
+  
+  const tasks = GH.map(slug => () => fetchGreenhouse(slug, { limit }));
+  const results = await limitConcurrency(tasks, JOB_FETCH.concurrency);
+  
+  const allJobs = results.flat().filter(job => job && !job.error);
+  console.log(`Greenhouse: Fetched ${allJobs.length} jobs from ${results.filter(r => r && r.length > 0).length} companies`);
+  
+  return allJobs;
 }

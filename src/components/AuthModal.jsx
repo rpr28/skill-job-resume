@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/lib/auth/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { X, Eye, EyeOff } from 'lucide-react';

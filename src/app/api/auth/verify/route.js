@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
-import jwt from 'jsonwebtoken';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+import { verifyJWT } from '@/lib/auth/jwt';
+import { prisma } from '@/lib/db';
 
 export async function POST(request) {
   try {
@@ -16,14 +15,24 @@ export async function POST(request) {
 
     try {
       // Verify token
-      const decoded = jwt.verify(token, JWT_SECRET);
+      const payload = await verifyJWT(token);
+      
+      // Get user from database
+      const user = await prisma.user.findUnique({
+        where: { id: payload.userId },
+        select: { id: true, email: true, name: true }
+      });
+      
+      if (!user) {
+        return NextResponse.json(
+          { error: 'User not found' },
+          { status: 401 }
+        );
+      }
       
       return NextResponse.json({
         valid: true,
-        user: {
-          userId: decoded.userId,
-          email: decoded.email,
-        },
+        user,
       });
     } catch (jwtError) {
       return NextResponse.json(

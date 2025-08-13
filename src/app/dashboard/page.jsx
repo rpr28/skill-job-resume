@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/lib/auth/client";
 import { User, FileText, Briefcase, BookOpen, LogOut } from 'lucide-react';
 import Link from 'next/link';
 

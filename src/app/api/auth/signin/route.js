@@ -1,9 +1,7 @@
 import { NextResponse } from 'next/server';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import { findUserByEmail } from '@/lib/db';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+import { prisma } from '@/lib/db';
+import { verify } from '@/lib/auth/hash';
+import { signJWT } from '@/lib/auth/jwt';
 
 export async function POST(request) {
   try {
@@ -18,7 +16,10 @@ export async function POST(request) {
     }
 
     // Find user
-    const user = findUserByEmail(email);
+    const user = await prisma.user.findUnique({
+      where: { email }
+    });
+    
     if (!user) {
       return NextResponse.json(
         { error: 'Invalid credentials' },
@@ -27,7 +28,7 @@ export async function POST(request) {
     }
 
     // Check password
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await verify(password, user.password);
     if (!isPasswordValid) {
       return NextResponse.json(
         { error: 'Invalid credentials' },
@@ -36,17 +37,12 @@ export async function POST(request) {
     }
 
     // Generate JWT token
-    const token = jwt.sign(
-      { userId: user.id, email: user.email },
-      JWT_SECRET,
-      { expiresIn: '7d' }
-    );
+    const token = await signJWT({ userId: user.id, email: user.email });
 
     // Remove password from response
     const { password: _, ...userWithoutPassword } = user;
 
     return NextResponse.json({
-      message: 'Sign in successful',
       user: userWithoutPassword,
       token,
     });
