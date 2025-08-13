@@ -2,53 +2,68 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/lib/auth/client";
+import { LoginDialog } from "@/components/auth/LoginDialog";
+import { SignupDialog } from "@/components/auth/SignupDialog";
+import { LogOut, User } from "lucide-react";
 
-export default function Header() {
+const Header = () => {
   const { user, isAuthenticated, logout } = useAuth();
 
   return (
-    <header className="w-full border-b border-gray-200 bg-white">
+    <header className="border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="text-xl font-bold text-blue-600">
-            CareerBoost
+          <Link href="/" className="flex items-center space-x-2">
+            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center">
+              <span className="text-white font-bold text-sm">CB</span>
+            </div>
+            <span className="font-bold text-xl text-gray-900">CareerBoost</span>
           </Link>
 
           {/* Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/resume" className="text-gray-600 hover:text-blue-600 transition-colors">
-              Resume
-            </Link>
-            <Link href="/jobs" className="text-gray-600 hover:text-blue-600 transition-colors">
+            <Link href="/jobs" className="text-gray-600 hover:text-gray-900 transition-colors">
               Jobs
             </Link>
-            <Link href="/courses" className="text-gray-600 hover:text-blue-600 transition-colors">
+            <Link href="/resume" className="text-gray-600 hover:text-gray-900 transition-colors">
+              Resume
+            </Link>
+            <Link href="/courses" className="text-gray-600 hover:text-gray-900 transition-colors">
               Courses
             </Link>
-            <Link href="/blog" className="text-gray-600 hover:text-blue-600 transition-colors">
+            <Link href="/blog" className="text-gray-600 hover:text-gray-900 transition-colors">
               Blog
             </Link>
+            {isAuthenticated && (
+              <Link href="/saved-jobs" className="text-gray-600 hover:text-gray-900 transition-colors">
+                Saved Jobs
+              </Link>
+            )}
           </nav>
 
           {/* Auth Buttons */}
           <div className="flex items-center space-x-4">
             {isAuthenticated ? (
               <div className="flex items-center space-x-4">
-                <span className="text-sm text-gray-600">Welcome, {user?.name || 'User'}</span>
-                <Button variant="outline" onClick={logout}>
-                  Logout
+                <span className="text-sm text-gray-600">
+                  Hi, {user?.name || user?.email}
+                </span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={logout}
+                  className="flex items-center space-x-2"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span>Logout</span>
                 </Button>
               </div>
             ) : (
               <div className="flex items-center space-x-2">
-                <Button variant="outline" asChild>
-                  <Link href="/auth?mode=signin">Sign In</Link>
-                </Button>
-                <Button asChild>
-                  <Link href="/auth?mode=signup">Sign Up</Link>
-                </Button>
+                <LoginDialog />
+                <SignupDialog />
               </div>
             )}
           </div>
@@ -56,4 +71,6 @@ export default function Header() {
       </div>
     </header>
   );
-}
+};
+
+export default Header;

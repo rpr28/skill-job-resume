@@ -5,11 +5,16 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import { courses } from "@/data/courses";
-import { Search, MapPin, Briefcase, ChevronLeft, ChevronRight, Bookmark, BookmarkCheck } from "lucide-react";
+import { useAuth } from "@/lib/auth/client";
+import { api } from "@/lib/api";
+import { SavedToggle } from "@/components/jobs/SavedToggle";
+import { Search, MapPin, Briefcase, ChevronLeft, ChevronRight } from "lucide-react";
 
 const Jobs = () => {
+  const { isAuthenticated } = useAuth();
   const [q, setQ] = useState("");
   const [location, setLocation] = useState("all");
   const [remote, setRemote] = useState("all");
@@ -20,72 +25,56 @@ const Jobs = () => {
   const [jobs, setJobs] = useState([]);
   const [resume, setResume] = useState(null);
   const [recommendedCourses, setRecommendedCourses] = useState([]);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalJobs, setTotalJobs] = useState(0);
   const [nextCursor, setNextCursor] = useState(null);
   const [prevCursor, setPrevCursor] = useState(null);
   const [cursorHistory, setCursorHistory] = useState([]);
   const [savedJobs, setSavedJobs] = useState(new Set());
-  const [authToken, setAuthToken] = useState(null);
+  const [suggestions, setSuggestions] = useState({ tags: [], companies: [], locations: [] });
 
-  // Check authentication status
+  // Check authentication status and load saved jobs
   useEffect(() => {
-    const token = localStorage.getItem('cb:auth:token');
-    const user = localStorage.getItem('cb:auth:user');
-    if (token && user) {
-      setIsAuthenticated(true);
-      setAuthToken(token);
-      
-      // Load saved jobs
-      loadSavedJobs(token);
-      
-      const savedResume = localStorage.getItem('cb:resume:last');
-      if (savedResume) {
-        try {
-          const resumeData = JSON.parse(savedResume);
-          
-          // Ensure all required fields exist with defaults
-          const completeResumeData = {
-            name: "",
-            title: "",
-            email: "",
-            phone: "",
-            location: "",
-            summary: "",
-            skills: [],
-            titles: [],
-            domains: [],
-            openToRemote: true,
-            preferredLocations: [],
-            experience: [],
-            education: [],
-            ...resumeData // Override with saved data
-          };
-          
-          setResume(completeResumeData);
-        } catch (e) {
-          console.error('Failed to parse saved resume:', e);
-        }
+    if (isAuthenticated) {
+      loadSavedJobs();
+    }
+    
+    const savedResume = localStorage.getItem('cb:resume:last');
+    if (savedResume) {
+      try {
+        const resumeData = JSON.parse(savedResume);
+        
+        // Ensure all required fields exist with defaults
+        const completeResumeData = {
+          name: "",
+          title: "",
+          email: "",
+          phone: "",
+          location: "",
+          summary: "",
+          skills: [],
+          titles: [],
+          domains: [],
+          openToRemote: true,
+          preferredLocations: [],
+          experience: [],
+          education: [],
+          ...resumeData // Override with saved data
+        };
+        
+        setResume(completeResumeData);
+      } catch (e) {
+        console.error('Failed to parse saved resume:', e);
       }
     }
-  }, []);
+  }, [isAuthenticated]);
 
   // Load saved jobs
-  const loadSavedJobs = async (token) => {
+  const loadSavedJobs = async () => {
     try {
-      const res = await fetch("/api/applications", {
-        headers: { 
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        }
-      });
-      
-      if (res.ok) {
-        const data = await res.json();
-        const savedJobIds = new Set(data.applications.map(app => app.job.id));
-        setSavedJobs(savedJobIds);
-      }
+      const response = await api.get('/api/applications');
+      const savedJobIds = new Set(response.applications.map(app => app.job.id));
+      setSavedJobs(savedJobIds);
     } catch (error) {
       console.error("Failed to load saved jobs:", error);
     }
@@ -108,7 +97,21 @@ const Jobs = () => {
   // Load default jobs when page loads
   useEffect(() => {
     loadDefaultJobs();
+    loadSuggestions();
   }, []); // Empty dependency array to run only once on mount
+
+  // Load suggestions
+  const loadSuggestions = async () => {
+    try {
+      const response = await fetch('/api/jobs/suggest');
+      if (response.ok) {
+        const data = await response.json();
+        setSuggestions(data);
+      }
+    } catch (error) {
+      console.error('Failed to load suggestions:', error);
+    }
+  };
 
   // Load default jobs
   const loadDefaultJobs = async () => {
@@ -258,81 +261,33 @@ const Jobs = () => {
     }
   };
 
-  // Save job
-  const saveJob = async (job) => {
-    if (!isAuthenticated || !authToken) {
-      toast({ title: "Please sign in to save jobs", variant: "destructive" });
-      return;
+  // Handle suggestion click
+  const handleSuggestionClick = (type, value) => {
+    if (type === 'tags') {
+      setQ(value);
+    } else if (type === 'locations') {
+      setLocation(value);
+    } else if (type === 'companies') {
+      // For companies, we could add a company filter or search by company name
+      setQ(value);
     }
-
-    try {
-      const res = await fetch("/api/applications", {
-        method: "POST",
-        headers: { 
-          "Authorization": `Bearer ${authToken}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ job, status: "saved" }),
-      });
-      
-      if (res.ok) {
-        setSavedJobs(prev => new Set([...prev, job.id]));
-        toast({ title: "Job saved successfully!" });
-      } else if (res.status === 409) {
-        toast({ title: "Job already saved", variant: "destructive" });
-      } else {
-        throw new Error("Failed to save job");
-      }
-    } catch (error) {
-      console.error("Failed to save job:", error);
-      toast({ title: "Failed to save job", description: "Please try again.", variant: "destructive" });
-    }
+    
+    // Trigger search after a short delay
+    setTimeout(() => {
+      searchJobs();
+    }, 100);
   };
 
-  // Unsave job
-  const unsaveJob = async (job) => {
-    if (!isAuthenticated || !authToken) {
-      toast({ title: "Please sign in to manage saved jobs", variant: "destructive" });
-      return;
-    }
-
-    try {
-      // Find the application ID for this job
-      const res = await fetch("/api/applications", {
-        headers: { 
-          "Authorization": `Bearer ${authToken}`,
-          "Content-Type": "application/json"
-        }
+  // Handle save/unsave toggle
+  const handleSaveToggle = (jobId, saved) => {
+    if (saved) {
+      setSavedJobs(prev => new Set([...prev, jobId]));
+    } else {
+      setSavedJobs(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(jobId);
+        return newSet;
       });
-      
-      if (res.ok) {
-        const data = await res.json();
-        const application = data.applications.find(app => app.job.id === job.id);
-        
-        if (application) {
-          const deleteRes = await fetch(`/api/applications/${application.id}`, {
-            method: "DELETE",
-            headers: { 
-              "Authorization": `Bearer ${authToken}`,
-              "Content-Type": "application/json"
-            }
-          });
-          
-          if (deleteRes.ok) {
-            setSavedJobs(prev => {
-              const newSet = new Set(prev);
-              newSet.delete(job.id);
-              return newSet;
-            });
-            toast({ title: "Job removed from saved jobs" });
-          } else {
-            throw new Error("Failed to remove job");
-          }
-        }
-      }
-    } catch (error) {
-      console.error("Failed to unsave job:", error);
-      toast({ title: "Failed to remove job", description: "Please try again.", variant: "destructive" });
     }
   };
 
@@ -437,6 +392,70 @@ const Jobs = () => {
       {/* Main Content */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
+          {/* Job Suggestions */}
+          {(suggestions.tags.length > 0 || suggestions.companies.length > 0 || suggestions.locations.length > 0) && (
+            <Card className="mb-8 border-blue-200 bg-blue-50">
+              <CardHeader>
+                <CardTitle className="text-blue-800 text-lg">💡 Popular Searches</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {suggestions.tags.length > 0 && (
+                    <div>
+                      <h4 className="text-sm font-medium text-blue-700 mb-2">Popular Skills</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {suggestions.tags.slice(0, 8).map((tag, index) => (
+                          <Badge 
+                            key={index}
+                            variant="secondary"
+                            className="cursor-pointer hover:bg-blue-200"
+                            onClick={() => handleSuggestionClick('tags', tag)}
+                          >
+                            {tag}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {suggestions.companies.length > 0 && (
+                    <div>
+                      <h4 className="text-sm font-medium text-blue-700 mb-2">Top Companies</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {suggestions.companies.slice(0, 6).map((company, index) => (
+                          <Badge 
+                            key={index}
+                            variant="outline"
+                            className="cursor-pointer hover:bg-blue-200"
+                            onClick={() => handleSuggestionClick('companies', company)}
+                          >
+                            {company}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {suggestions.locations.length > 0 && (
+                    <div>
+                      <h4 className="text-sm font-medium text-blue-700 mb-2">Popular Locations</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {suggestions.locations.slice(0, 6).map((location, index) => (
+                          <Badge 
+                            key={index}
+                            variant="outline"
+                            className="cursor-pointer hover:bg-blue-200"
+                            onClick={() => handleSuggestionClick('locations', location)}
+                          >
+                            {location}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Job Results */}
           {jobs.length > 0 ? (
             <div className="mb-12">
@@ -486,26 +505,11 @@ const Jobs = () => {
                             Apply Now
                           </a>
                         </Button>
-                        {savedJobs.has(job.id) ? (
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => unsaveJob(job)}
-                            className="text-green-600 border-green-600 hover:bg-green-50"
-                          >
-                            <BookmarkCheck className="w-4 h-4 mr-1" />
-                            Saved
-                          </Button>
-                        ) : (
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => saveJob(job)}
-                          >
-                            <Bookmark className="w-4 h-4 mr-1" />
-                            Save Job
-                          </Button>
-                        )}
+                        <SavedToggle 
+                          job={job}
+                          isSaved={savedJobs.has(job.id)}
+                          onToggle={(saved) => handleSaveToggle(job.id, saved)}
+                        />
                       </div>
                     </CardContent>
                   </Card>
