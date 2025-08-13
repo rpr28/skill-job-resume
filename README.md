@@ -1,23 +1,20 @@
-# CareerBoost - Next.js
+# CareerBoost - AI Resume Builder & Job Search
 
-A modern career development platform built with Next.js, featuring AI resume builder, job search automation, and curated courses.
+A modern web application for building ATS-friendly resumes, automating job search alerts, and upskilling with curated courses.
 
 ## Features
 
-- **Resume Builder**: Create ATS-friendly resumes with multiple templates
-- **Job Search**: Search curated jobs and subscribe to alerts
-- **Course Directory**: Browse curated courses from top platforms
+- **Resume Builder**: Create professional resumes with multiple templates
+- **Job Search**: Automated job matching based on your resume
+- **Course Directory**: Curated learning resources for career growth
 - **Dashboard**: Track your progress and saved data
-- **Blog**: Career tips and insights
 
 ## Tech Stack
 
-- **Framework**: Next.js 14 with App Router
-- **Styling**: Tailwind CSS with shadcn/ui components
-- **State Management**: React Query for server state
-- **Forms**: React Hook Form with Zod validation
-- **Icons**: Lucide React
-- **TypeScript**: Full type safety
+- **Frontend**: Next.js 14, React 18
+- **Styling**: Tailwind CSS
+- **UI Components**: Radix UI, shadcn/ui
+- **Language**: JavaScript (converted from TypeScript)
 
 ## Getting Started
 
@@ -33,6 +30,18 @@ A modern career development platform built with Next.js, featuring AI resume bui
 
 3. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
+## Project Structure
+
+```
+src/
+├── app/                 # Next.js app router pages
+├── components/          # Reusable React components
+├── data/               # Static data (jobs, courses)
+├── hooks/              # Custom React hooks
+├── lib/                # Utility functions
+└── utils/              # Helper utilities
+```
+
 ## Available Scripts
 
 - `npm run dev` - Start development server
@@ -40,32 +49,13 @@ A modern career development platform built with Next.js, featuring AI resume bui
 - `npm run start` - Start production server
 - `npm run lint` - Run ESLint
 
-## Project Structure
+## Conversion Notes
 
-```
-src/
-├── app/                 # Next.js App Router pages
-│   ├── layout.tsx      # Root layout
-│   ├── page.tsx        # Home page
-│   ├── resume/         # Resume builder page
-│   ├── jobs/           # Job search page
-│   ├── courses/        # Course directory page
-│   ├── dashboard/      # User dashboard page
-│   └── blog/           # Blog page
-├── components/         # Reusable components
-│   ├── ui/            # shadcn/ui components
-│   ├── resume/        # Resume-specific components
-│   └── Layout.tsx     # Main layout component
-├── pages/             # Page components (legacy)
-├── data/              # Static data
-├── hooks/             # Custom hooks
-├── lib/               # Utility functions
-└── utils/             # Helper utilities
-```
+This project was converted from TypeScript to JavaScript. All type annotations have been removed while maintaining the same functionality. The project uses:
 
-## Deployment
-
-This project can be deployed on Vercel, Netlify, or any platform that supports Next.js.
+- `jsconfig.json` instead of `tsconfig.json`
+- `.js` and `.jsx` file extensions
+- No TypeScript dependencies
 
 ## License
 

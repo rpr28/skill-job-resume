@@ -1,0 +1,7 @@
+{
+  "crons": [
+    { "path": "/api/ingest", "schedule": "*/15 * * * *", "headers": { "x-cron-key": "@cron-secret" } }
+  ]
+}
+
+

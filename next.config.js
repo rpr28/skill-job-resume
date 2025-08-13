@@ -1,8 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  images: {
-    domains: [],
-  },
+  // Next.js 14+ automatically enables app directory
 }
 
 module.exports = nextConfig

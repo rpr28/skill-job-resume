@@ -1,4 +1,4 @@
-// File: /Users/rohanramachandruni/resumebuilder/skill-job-resume/src/app/api/jobs/route.ts
+// File: /Users/rohanramachandruni/resumebuilder/skill-job-resume/src/app/api/jobs/route.js
 import * as entry from '../../../../../src/app/api/jobs/route.js'
 import type { NextRequest } from 'next/server.js'
 
