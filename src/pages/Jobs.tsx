@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useEffect, useMemo, useState } from "react";
 import { jobs as JOBS, Job } from "@/data/jobs";
 import { toast } from "@/hooks/use-toast";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
 const Jobs = () => {
   const [q, setQ] = useState("");
@@ -14,6 +15,9 @@ const Jobs = () => {
   const [remote, setRemote] = useState<string>("all");
   const [email, setEmail] = useState("");
   const [webhookUrl, setWebhookUrl] = useState("");
+  const [page, setPage] = useState(1);
+
+  const PAGE_SIZE = 10;
 
   const results = useMemo(() => {
     return JOBS.filter((j) =>
@@ -29,6 +33,15 @@ const Jobs = () => {
       try { const parsed = JSON.parse(saved); setEmail(parsed.email || ""); setWebhookUrl(parsed.webhookUrl || ""); } catch {}
     }
   }, []);
+
+  useEffect(() => {
+    setPage(1);
+  }, [q, location, remote]);
+
+  const totalPages = Math.max(1, Math.ceil(results.length / PAGE_SIZE));
+  const currentPage = Math.min(page, totalPages);
+  const startIndex = (currentPage - 1) * PAGE_SIZE;
+  const paginatedResults = results.slice(startIndex, startIndex + PAGE_SIZE);
 
   const onSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,26 +111,46 @@ const Jobs = () => {
         </Card>
 
         <section className="grid md:grid-cols-2 gap-4">
-          {results.map((job) => (
+          {paginatedResults.map((job) => (
             <Card key={job.id} className="transition duration-200 hover:shadow-md">
               <CardHeader>
                 <CardTitle className="text-base">{job.title} · {job.company}</CardTitle>
               </CardHeader>
               <CardContent className="text-sm text-muted-foreground space-y-2">
-                <p>{job.location} · {job.remote ? 'Remote' : 'Onsite'}</p>
-                <p>{job.summary}</p>
-                <div className="flex gap-2 flex-wrap">
-                  {job.tags.map((t) => (
-                    <span key={t} className="px-2 py-1 rounded-md bg-secondary text-secondary-foreground text-xs">{t}</span>
-                  ))}
-                </div>
+                <p>{job.location}</p>
                 <div className="pt-2">
-                  <a href={job.url} target="_blank" rel="noreferrer" className="text-primary underline">View</a>
+                  <Button asChild size="sm">
+                    <a href={job.url} target="_blank" rel="noreferrer">Apply</a>
+                  </Button>
                 </div>
               </CardContent>
             </Card>
           ))}
         </section>
+
+        {results.length > 0 && (
+          <Pagination className="mt-2">
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious href="#" onClick={(e) => { e.preventDefault(); setPage((prev) => Math.max(1, prev - 1)); }} />
+              </PaginationItem>
+              {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => (
+                <PaginationItem key={pageNumber}>
+                  <PaginationLink
+                    href="#"
+                    isActive={pageNumber === currentPage}
+                    onClick={(e) => { e.preventDefault(); setPage(pageNumber); }}
+                  >
+                    {pageNumber}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+              <PaginationItem>
+                <PaginationNext href="#" onClick={(e) => { e.preventDefault(); setPage((prev) => Math.min(totalPages, prev + 1)); }} />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        )}
 
         <Card>
           <CardHeader>
