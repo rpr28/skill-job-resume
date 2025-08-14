@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { verifyJWT } from '@/lib/auth/jwt';
-import { prisma } from '@/lib/db';
+import { verifyJWT } from '../../../lib/auth/jwt';
+import { prisma } from '../../../lib/db';
 
 export async function POST(request) {
   try {

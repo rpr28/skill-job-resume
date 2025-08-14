@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { toast } from "@/hooks/use-toast";
-import { useAuth } from "@/lib/auth/client";
-import { api } from "@/lib/api";
+import { Button } from "../../components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
+import { toast } from "../../hooks/use-toast";
+import { useAuth } from "../../lib/auth/client";
+import { api } from "../../lib/api";
 import { BookmarkCheck, ExternalLink, Trash2 } from "lucide-react";
 
 const SavedJobs = () => {

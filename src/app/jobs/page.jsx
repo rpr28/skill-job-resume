@@ -1,15 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { toast } from "@/hooks/use-toast";
-import { useAuth } from "@/lib/auth/client";
-import { api } from "@/lib/api";
-import { SavedToggle } from "@/components/jobs/SavedToggle";
+import { Input } from "../../components/ui/input";
+import { Button } from "../../components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select";
+import { Badge } from "../../components/ui/badge";
+import { toast } from "../../hooks/use-toast";
+import { useAuth } from "../../lib/auth/client";
+import { api } from "../../lib/api";
+import { SavedToggle } from "../../components/jobs/SavedToggle";
 import { Search, MapPin, Briefcase, ChevronLeft, ChevronRight } from "lucide-react";
 
 function useJobs(params) {

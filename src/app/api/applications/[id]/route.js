@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/db";
-import { verifyJWT } from "@/lib/auth/jwt";
+import { prisma } from "../../../lib/db";
+import { verifyJWT } from "../../../lib/auth/jwt";
 
 // DELETE /api/applications/[id] - Remove a saved job
 export async function DELETE(req, { params }) {

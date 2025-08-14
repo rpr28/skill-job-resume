@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/db";
-import { verifyJWT } from "@/lib/auth/jwt";
+import { prisma } from "../../../lib/db";
+import { verifyJWT } from "../../../lib/auth/jwt";
 
 // GET /api/applications - Get user's saved jobs
 export async function GET(req) {

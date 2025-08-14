@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { cacheGet } from "@/lib/redis";
-import { aggregateJobs } from "@/lib/jobs/service";
+import { cacheGet } from "../../../lib/redis";
+import { aggregateJobs } from "../../../lib/jobs/service";
 
 export async function GET() {
   try {

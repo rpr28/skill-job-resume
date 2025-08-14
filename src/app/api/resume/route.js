@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { verifyJWT } from "@/lib/auth/jwt";
-import { prisma } from "@/lib/db";
-import { idemCheck } from "@/lib/redis";
+import { verifyJWT } from "../../../lib/auth/jwt";
+import { prisma } from "../../../lib/db";
+import { idemCheck } from "../../../lib/redis";
 
 export async function POST(req) {
   try {

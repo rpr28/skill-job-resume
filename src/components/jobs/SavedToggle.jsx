@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { useAuth } from '@/lib/auth/client';
-import { api } from '@/lib/api';
-import { toast } from '@/hooks/use-toast';
+import { Button } from '../../components/ui/button';
+import { useAuth } from '../../lib/auth/client';
+import { api } from '../../lib/api';
+import { toast } from '../../hooks/use-toast';
 import { Bookmark, BookmarkCheck } from 'lucide-react';
-import { LoginDialog } from '@/components/auth/LoginDialog';
+import { LoginDialog } from '../../components/auth/LoginDialog';
 
 export function SavedToggle({ job, isSaved, onToggle }) {
   const { isAuthenticated } = useAuth();

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { testCompanySlug } from "@/lib/job-search";
+import { testCompanySlug } from "../../../lib/job-search";
 
 export async function GET() {
   const companies = [

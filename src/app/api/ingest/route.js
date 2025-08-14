@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { aggregateJobs } from "@/lib/job-search";
-import { cacheSet } from "@/lib/redis";
+import { aggregateJobs } from "../../../lib/job-search";
+import { cacheSet } from "../../../lib/redis";
 
 export async function POST(req) {
   const key = req.headers.get("x-cron-key");

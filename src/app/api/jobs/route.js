@@ -1,8 +1,8 @@
 // app/api/jobs/route.js
 import { NextResponse } from "next/server";
-import { cacheGet } from "@/lib/redis";
-import { aggregateJobs } from "@/lib/job-search";
-import { tokenize, unique } from "@/lib/jobs/utils";
+import { cacheGet } from "../../../lib/redis";
+import { aggregateJobs } from "../../../lib/job-search";
+import { tokenize, unique } from "../../../lib/jobs/utils";
 
 // Project job to minimal fields for pagination
 function project(job) {

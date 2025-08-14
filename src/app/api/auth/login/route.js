@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/db";
-import { verify } from "@/lib/auth/hash";
-import { signJWT } from "@/lib/auth/jwt";
+import { prisma } from "../../../lib/db";
+import { verify } from "../../../lib/auth/hash";
+import { signJWT } from "../../../lib/auth/jwt";
 export async function POST(req){
   const { email, password } = await req.json();
   const user = await prisma.user.findUnique({ where: { email } });

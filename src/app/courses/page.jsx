@@ -1,11 +1,11 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "../../components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select";
+import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import { useMemo, useState, useEffect } from "react";
-import { courses as COURSES } from "@/data/courses";
-import { Button } from "@/components/ui/button";
+import { courses as COURSES } from "../../data/courses";
+import { Button } from "../../components/ui/button";
 import { Search } from "lucide-react";
 
 const Courses = () => {

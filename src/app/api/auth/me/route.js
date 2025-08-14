@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { verifyJWT } from "@/lib/auth/jwt";
-import { prisma } from "@/lib/db";
+import { verifyJWT } from "../../../lib/auth/jwt";
+import { prisma } from "../../../lib/db";
 export async function GET(req){
   try{
     const token = req.headers.get("authorization")?.split(" ")[1];
