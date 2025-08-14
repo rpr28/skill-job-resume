@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { generate } from '@/lib/ai/client';
-import { SYSTEM_SUMMARY, mkSummaryPrompt } from '@/lib/ai/prompts';
-import { summaryLimiter, getClientIP } from '@/lib/ai/rate-limit';
+import { generate } from '../../../../lib/ai/client';
+import { SYSTEM_SUMMARY, mkSummaryPrompt } from '../../../../lib/ai/prompts';
+import { summaryLimiter, getClientIP } from '../../../../lib/ai/rate-limit';
 
 const SummarySchema = z.object({
   profile: z.object({

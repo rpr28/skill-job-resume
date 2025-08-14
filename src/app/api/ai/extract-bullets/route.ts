@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { generate } from '@/lib/ai/client';
-import { SYSTEM_EXTRACT, mkExtractBulletsPrompt } from '@/lib/ai/prompts';
-import { extractLimiter, getClientIP } from '@/lib/ai/rate-limit';
+import { generate } from '../../../../lib/ai/client';
+import { SYSTEM_EXTRACT, mkExtractBulletsPrompt } from '../../../../lib/ai/prompts';
+import { extractLimiter, getClientIP } from '../../../../lib/ai/rate-limit';
 
 const ExtractBulletsSchema = z.object({
   raw: z.string().min(10).max(2000),

@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { generate } from '@/lib/ai/client';
-import { SYSTEM_COVER, mkCoverPrompt } from '@/lib/ai/prompts';
-import { coverLimiter, getClientIP } from '@/lib/ai/rate-limit';
+import { generate } from '../../../../lib/ai/client';
+import { SYSTEM_COVER, mkCoverPrompt } from '../../../../lib/ai/prompts';
+import { coverLimiter, getClientIP } from '../../../../lib/ai/rate-limit';
 
 const CoverLetterSchema = z.object({
   profile: z.object({

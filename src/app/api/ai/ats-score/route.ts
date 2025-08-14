@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { scoreMatch } from '@/lib/ai/embeddings-server';
-import { atsLimiter, getClientIP } from '@/lib/ai/rate-limit';
+import { scoreMatch } from '../../../../lib/ai/embeddings-server';
+import { atsLimiter, getClientIP } from '../../../../lib/ai/rate-limit';
 
 const ATSScoreSchema = z.object({
   resumeText: z.string().min(10).max(10000),

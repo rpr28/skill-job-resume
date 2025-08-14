@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { generate } from '@/lib/ai/client';
-import { SYSTEM_REWRITE, mkRewritePrompt } from '@/lib/ai/prompts';
-import { rewriteLimiter, getClientIP } from '@/lib/ai/rate-limit';
+import { generate } from '../../../../lib/ai/client';
+import { SYSTEM_REWRITE, mkRewritePrompt } from '../../../../lib/ai/prompts';
+import { rewriteLimiter, getClientIP } from '../../../../lib/ai/rate-limit';
 
 const RewriteBulletsSchema = z.object({
   bullets: z.array(z.string().min(1).max(500)).min(1).max(10),
