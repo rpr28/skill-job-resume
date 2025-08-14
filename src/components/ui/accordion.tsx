@@ -5,7 +5,7 @@ import * as React from "react"
 import * as AccordionPrimitive from "@radix-ui/react-accordion"
 import { ChevronDown } from "lucide-react"
 
-import { cn } from "@/lib/utils"
+import { cn } from "../../lib/utils"
 
 export const Accordion = AccordionPrimitive.Root
 
@@ -62,7 +62,7 @@ AccordionContent.displayName = "AccordionContent"
 // Usage example (App Router)
 // File: app/page.tsx
 //
-// import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
+// import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "./accordion";
 //
 // export default function Page() {
 //   return (

@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { useAuth } from "@/lib/auth/client";
-import { LoginDialog } from "@/components/auth/LoginDialog";
-import { SignupDialog } from "@/components/auth/SignupDialog";
+import { Button } from "./ui/button";
+import { useAuth } from "../lib/auth/client";
+import { LoginDialog } from "./auth/LoginDialog";
+import { SignupDialog } from "./auth/SignupDialog";
 import { LogOut, User } from "lucide-react";
 
 const Header = () => {

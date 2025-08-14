@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
+import { Textarea } from "../../components/ui/textarea";
+import AIAssistant from "../../components/resume/AIAssistant";
 
 export default function ResumePage() {
   const [data, setData] = useState({
@@ -64,7 +65,7 @@ export default function ResumePage() {
       {/* Resume Builder */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid lg:grid-cols-3 gap-8">
             {/* Resume Builder */}
             <Card>
               <CardHeader>
@@ -184,6 +185,11 @@ export default function ResumePage() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* AI Assistant */}
+            <div className="lg:col-span-1">
+              <AIAssistant data={data} setData={setData} />
+            </div>
           </div>
         </div>
       </section>

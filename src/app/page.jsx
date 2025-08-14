@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { useAuth } from "@/lib/auth/client";
+import { Button } from "../components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import { Input } from "../components/ui/input";
+import { useAuth } from "../lib/auth/client";
 import { FileText, Briefcase, BookOpen, TrendingUp, Users, Zap } from "lucide-react";
 import Link from "next/link";
 
