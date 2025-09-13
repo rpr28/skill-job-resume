@@ -1,6 +1,5 @@
 {
-  "/jobs/page": "app/jobs/page.js",
-  "/api/skills/seed/route": "app/api/skills/seed/route.js",
-  "/page": "app/page.js",
-  "/blog/page": "app/blog/page.js"
+  "/_not-found/page": "app/_not-found/page.js",
+  "/skill-verification/page": "app/skill-verification/page.js",
+  "/employer-dashboard/page": "app/employer-dashboard/page.js"
 }

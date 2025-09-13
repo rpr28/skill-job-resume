@@ -1,35 +1,25 @@
 {
   "pages": {
-    "/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/page.js"
-    ],
     "/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/resume/page": [
+    "/skill-verification/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/resume/page.js"
+      "static/chunks/app/skill-verification/page.js"
     ],
-    "/courses/page": [
+    "/employer-dashboard/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/courses/page.js"
+      "static/chunks/app/employer-dashboard/page.js"
     ],
-    "/jobs/page": [
+    "/_not-found/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/jobs/page.js"
-    ],
-    "/blog/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/blog/page.js"
+      "static/chunks/app/_not-found/page.js"
     ]
   }
 }
