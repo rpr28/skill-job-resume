@@ -16,11 +16,6 @@
       "static/chunks/main-app.js",
       "static/chunks/app/resume/page.js"
     ],
-    "/latex-resume/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/latex-resume/page.js"
-    ],
     "/courses/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",

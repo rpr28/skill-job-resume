@@ -30,6 +30,9 @@ const Header = () => {
             <Link href="/resume" className="text-gray-600 hover:text-gray-900 transition-colors">
               Resume
             </Link>
+            <Link href="/skill-verification" className="text-gray-600 hover:text-gray-900 transition-colors">
+              Skill Verification
+            </Link>
             <Link href="/courses" className="text-gray-600 hover:text-gray-900 transition-colors">
               Courses
             </Link>
@@ -37,9 +40,16 @@ const Header = () => {
               Blog
             </Link>
             {isAuthenticated && (
-              <Link href="/saved-jobs" className="text-gray-600 hover:text-gray-900 transition-colors">
-                Saved Jobs
-              </Link>
+              <>
+                <Link href="/saved-jobs" className="text-gray-600 hover:text-gray-900 transition-colors">
+                  Saved Jobs
+                </Link>
+                {user?.role === 'employer' && (
+                  <Link href="/employer-dashboard" className="text-gray-600 hover:text-gray-900 transition-colors">
+                    Employer Dashboard
+                  </Link>
+                )}
+              </>
             )}
           </nav>
 

@@ -1,7 +1,6 @@
 {
-  "/resume/page": "app/resume/page.js",
-  "/page": "app/page.js",
   "/jobs/page": "app/jobs/page.js",
-  "/courses/page": "app/courses/page.js",
-  "/api/ai/extract-bullets/route": "app/api/ai/extract-bullets/route.js"
+  "/api/skills/seed/route": "app/api/skills/seed/route.js",
+  "/page": "app/page.js",
+  "/blog/page": "app/blog/page.js"
 }
